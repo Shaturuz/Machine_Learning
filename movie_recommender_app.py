@@ -417,43 +417,45 @@ elif option == "Training":
                 pickle.dump(similarity, file)
 
     except Exception as e:
-        st.error("An error occured. Please process the dataset first...")
+        st.error("An error occured. Please preprocess the dataset first...")
         st.error(e)
 
 # Result Menu
 elif option == "Result":
-
-    with open("movies_dataset.pickle", 'rb') as file:
-        movie_dataset = pickle.load(file)
+    try:
+        with open("movies_dataset.pickle", 'rb') as file:
+            movie_dataset = pickle.load(file)
+        
+        with open("similarity.pickle", 'rb') as file:
+            similarity = pickle.load(file)
     
-    with open("similarity.pickle", 'rb') as file:
-        similarity = pickle.load(file)
-
-    movie_id = movie_dataset['movie_id'].values
-    movie_list = movie_dataset['title'].values
-
-    st.header('🎬 Movie Recommender System')
-
-    selected_movie = st.selectbox(
-        "Type or select a movie from the dropdown",
-        movie_list
-    )
-
-    if st.button('Show Recommendations'):
-        recommended_movie_names, recommended_movie_posters = recommend(selected_movie, similarity)
-        num_rows = 5
-        num_cols = 6
-
-        for row in range(num_rows):
-            cols = st.columns(num_cols)
-            for col in range(num_cols):
-                index = row * num_cols + col
-                if index < len(recommended_movie_names):
-                    with cols[col]:
-                        movie_name = f"{recommended_movie_names[index]}"
-                        container = f"""<div class='movie-title'>{movie_name}</div>"""
-                        st.markdown(container, unsafe_allow_html=True)
-                        try:
-                            st.image(recommended_movie_posters[index])
-                        except:
-                            st.empty()
+        movie_id = movie_dataset['movie_id'].values
+        movie_list = movie_dataset['title'].values
+    
+        st.header('🎬 Movie Recommender System')
+    
+        selected_movie = st.selectbox(
+            "Type or select a movie from the dropdown",
+            movie_list
+        )
+    
+        if st.button('Show Recommendations'):
+            recommended_movie_names, recommended_movie_posters = recommend(selected_movie, similarity)
+            num_rows = 5
+            num_cols = 6
+    
+            for row in range(num_rows):
+                cols = st.columns(num_cols)
+                for col in range(num_cols):
+                    index = row * num_cols + col
+                    if index < len(recommended_movie_names):
+                        with cols[col]:
+                            movie_name = f"{recommended_movie_names[index]}"
+                            container = f"""<div class='movie-title'>{movie_name}</div>"""
+                            st.markdown(container, unsafe_allow_html=True)
+                            try:
+                                st.image(recommended_movie_posters[index])
+                            except:
+                                st.empty()
+    except Exception:
+        st.error("Error. Please train the dataset first...")
