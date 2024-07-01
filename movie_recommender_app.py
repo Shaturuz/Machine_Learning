@@ -22,7 +22,7 @@ st.markdown("""
         color: #ffffff;
     }
     .main {
-        background-color: rgb(5, 5, 19);
+        background-color: rgb(7, 7, 35);
         color: #ffffff;
         font-family: 'Roboto', sans-serif;
     }
